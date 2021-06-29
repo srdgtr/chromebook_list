@@ -6,9 +6,7 @@ from google.auth.transport.requests import Request
 import json
 import pandas as pd
 import numpy as np
-# from pandas import json_normalize
 from datetime import datetime
-# import xlrd
 import pandas.io.formats.excel
 
 date_today = datetime.now().strftime("%c").replace(":", "-")
@@ -120,7 +118,6 @@ while aNextPageToken:
     aNextPageToken = None
 
     if chromebooks_list:
-        # chromebooks_list_dict = json.loads(str(chromebooks_list["chromeosdevices"]).replace("'", '"'))
         chromebooks_list_dict = json.loads(str(chromebooks_list["chromeosdevices"]).replace("'", '"').replace("\\", ''))
         for aRow in chromebooks_list_dict:
             if aRow["status"] == "ACTIVE":
