@@ -45,6 +45,8 @@ def process_get_detaild_chromebook_info(detaild_device_info):
     return chromebook_info
 
     # If modifying these scopes, delete the file token.pickle.
+
+
 SCOPES = [
     "https://www.googleapis.com/auth/admin.directory.device.chromeos",
 ]
@@ -118,7 +120,7 @@ while aNextPageToken:
     aNextPageToken = None
 
     if chromebooks_list:
-        chromebooks_list_dict = json.loads(str(chromebooks_list["chromeosdevices"]).replace("'", '"').replace("\\", ''))
+        chromebooks_list_dict = json.loads(str(chromebooks_list["chromeosdevices"]).replace("'", '"').replace("\\", ""))
         for aRow in chromebooks_list_dict:
             if aRow["status"] == "ACTIVE":
                 info_chromebook = process_get_detaild_chromebook_info(aRow)
@@ -129,31 +131,54 @@ while aNextPageToken:
     else:
         break
 
+
 def total_usage(time_range):
     if not isinstance(time_range, list):
         return "0"
     else:
         total = []
         for time in time_range:
-            total.append(time['activeTime'])
-        return int(sum(total)/6000)
+            total.append(time["activeTime"])
+        return int(sum(total) / 6000)
 
-device_list['usage_minuten'] = device_list['activeTimeRanges'].apply(total_usage)
 
-device_list['lastKnownNetwork'] = device_list['lastKnownNetwork'].apply(lambda x: x if not isinstance(x, list) else x[0] if len(x) else '')
-device_list["ipaddress"] = device_list['lastKnownNetwork'][pd.notna(device_list['lastKnownNetwork'])].apply(lambda x: x['ipAddress'] if x is not np.nan else x)  
-device_list["wanIpAddress"] = device_list['lastKnownNetwork'][pd.notna(device_list['lastKnownNetwork'])].apply(lambda x: x['wanIpAddress'] if x is not np.nan else x)  
-device_list['recentUser'] = device_list['recentUsers'].apply(lambda x: x if not isinstance(x, list) else x[0] if len(x) else '')
-device_list["lastuser"] = device_list['recentUser'][pd.notna(device_list['recentUser'])].apply(lambda x: x.get('email',"") if x is not np.nan else x) 
-device_list['lastKnownNetwork'].fillna(value="onbekend", inplace=True)
-os_versions = device_list['osVersion'].value_counts().reset_index()
-os_versions.columns=["os_versions","aantal"]
-chromebook_models = device_list['model'].value_counts().reset_index()
-chromebook_models.columns=["chromebook_models","aantal"]
-chromebook_location = device_list['annotatedLocation'].value_counts().reset_index()
-chromebook_location.columns=["chromebook_locatie","aantal"]
+device_list["usage_minuten"] = device_list["activeTimeRanges"].apply(total_usage)
 
-nodig_voor_controlen = device_list[['serialNumber','annotatedLocation', 'annotatedAssetId', 'notes', 'model', 'osVersion', 'lastKnownNetwork']]
+device_list["lastKnownNetwork"] = device_list["lastKnownNetwork"].apply(
+    lambda x: x if not isinstance(x, list) else x[0] if len(x) else ""
+)
+device_list["ipaddress"] = device_list["lastKnownNetwork"][pd.notna(device_list["lastKnownNetwork"])].apply(
+    lambda x: x["ipAddress"] if x is not np.nan else x
+)
+device_list["wanIpAddress"] = device_list["lastKnownNetwork"][pd.notna(device_list["lastKnownNetwork"])].apply(
+    lambda x: x["wanIpAddress"] if x is not np.nan else x
+)
+device_list["recentUser"] = device_list["recentUsers"].apply(
+    lambda x: x if not isinstance(x, list) else x[0] if len(x) else ""
+)
+device_list["lastuser"] = device_list["recentUser"][pd.notna(device_list["recentUser"])].apply(
+    lambda x: x.get("email", "") if x is not np.nan else x
+)
+device_list["lastKnownNetwork"].fillna(value="onbekend", inplace=True)
+os_versions = device_list["osVersion"].value_counts().reset_index()
+os_versions.columns = ["os_versions", "aantal"]
+chromebook_models = device_list["model"].value_counts().reset_index()
+chromebook_models.columns = ["chromebook_models", "aantal"]
+chromebook_location = device_list["annotatedLocation"].value_counts().reset_index()
+chromebook_location.columns = ["chromebook_locatie", "aantal"]
+
+nodig_voor_controlen = device_list[
+    [
+        "serialNumber",
+        "lastuser",
+        "annotatedAssetId",
+        "annotatedLocation",
+        "notes",
+        "osVersion",
+        "model",
+        "lastKnownNetwork",
+    ]
+]
 
 num_rows = len(device_list)
 
@@ -187,21 +212,45 @@ worksheet.conditional_format(
 # toevoegen van chart met os aantallen
 worksheet = workbook.add_chartsheet("os_version")
 chart = workbook.add_chart({"type": "column"})
-chart.set_title({'name': 'aantallen van elke os versie actieve chromebooks'})
-chart.add_series({"name":"aantallen","values": "=os_versions!$B$2:$B$20","categories":"=os_versions!$A$2:$A$20",'name_font': {'size': 14, 'bold': True},})
-chart.set_x_axis({"name":"os versions",'name_font': {'size': 14, 'bold': True},})
-chart.set_y_axis({'major_unit': 10,"name":"aantal"})
-chart.set_legend({'none': True})
+chart.set_title({"name": "aantallen van elke os versie actieve chromebooks"})
+chart.add_series(
+    {
+        "name": "aantallen",
+        "values": "=os_versions!$B$2:$B$20",
+        "categories": "=os_versions!$A$2:$A$20",
+        "name_font": {"size": 14, "bold": True},
+    }
+)
+chart.set_x_axis(
+    {
+        "name": "os versions",
+        "name_font": {"size": 14, "bold": True},
+    }
+)
+chart.set_y_axis({"major_unit": 10, "name": "aantal"})
+chart.set_legend({"none": True})
 worksheet.set_chart(chart)
 
 # toevoegen van chart met os aantallen
 worksheet = workbook.add_chartsheet("aantallen chromebook")
 chart = workbook.add_chart({"type": "column"})
-chart.set_title({'name': 'aantallen van elke model actieve chromebooks'})
-chart.add_series({"name":"aantallen","values": "=chromebook_models!$B$2:$B$10","categories":"=chromebook_models!$A$2:$A$10",'name_font': {'size': 14, 'bold': True},})
-chart.set_x_axis({"name":"chromebook model",'name_font': {'size': 14, 'bold': True},})
-chart.set_y_axis({'major_unit': 10,"name":"aantal"})
-chart.set_legend({'none': True})
+chart.set_title({"name": "aantallen van elke model actieve chromebooks"})
+chart.add_series(
+    {
+        "name": "aantallen",
+        "values": "=chromebook_models!$B$2:$B$10",
+        "categories": "=chromebook_models!$A$2:$A$10",
+        "name_font": {"size": 14, "bold": True},
+    }
+)
+chart.set_x_axis(
+    {
+        "name": "chromebook model",
+        "name_font": {"size": 14, "bold": True},
+    }
+)
+chart.set_y_axis({"major_unit": 10, "name": "aantal"})
+chart.set_legend({"none": True})
 worksheet.set_chart(chart)
 
 writer.save()
