@@ -213,12 +213,17 @@ worksheet.conditional_format(
 worksheet = workbook.add_chartsheet("os_version")
 chart = workbook.add_chart({"type": "column"})
 chart.set_title({"name": "aantallen van elke os versie actieve chromebooks"})
+chart.set_style(3)
+chart.set_plotarea({'gradient': {'colors': ['#33ccff', '#80ffff', '#339966']}})
+chart.set_chartarea({'border': {'none': True},'fill':   {'color': '#bfbfbf'}})
 chart.add_series(
     {
         "name": "aantallen",
         "values": "=os_versions!$B$2:$B$20",
         "categories": "=os_versions!$A$2:$A$20",
+        'gap': 25,
         "name_font": {"size": 14, "bold": True},
+        'data_labels': {'value': True, 'position': 'inside_end','font': {'name': 'Calibri', 'color': 'white','rotation': 345}},
     }
 )
 chart.set_x_axis(
@@ -227,7 +232,7 @@ chart.set_x_axis(
         "name_font": {"size": 14, "bold": True},
     }
 )
-chart.set_y_axis({"major_unit": 10, "name": "aantal"})
+chart.set_y_axis({"major_unit": 10, "name": "aantal",'major_gridlines': {'visible': False},})
 chart.set_legend({"none": True})
 worksheet.set_chart(chart)
 
@@ -235,12 +240,17 @@ worksheet.set_chart(chart)
 worksheet = workbook.add_chartsheet("aantallen chromebook")
 chart = workbook.add_chart({"type": "column"})
 chart.set_title({"name": "aantallen van elke model actieve chromebooks"})
+chart.set_style(3)
+chart.set_plotarea({'gradient': {'colors': ['#33ccff', '#80ffff', '#339966']}})
+chart.set_chartarea({'border': {'none': True},'fill':   {'color': '#bfbfbf'}})
 chart.add_series(
     {
         "name": "aantallen",
         "values": "=chromebook_models!$B$2:$B$10",
         "categories": "=chromebook_models!$A$2:$A$10",
+        'gap': 25,
         "name_font": {"size": 14, "bold": True},
+        'data_labels': {'value': True, 'position': 'inside_end','font': {'name': 'Calibri', 'color': 'white','rotation': 345}},
     }
 )
 chart.set_x_axis(
@@ -249,7 +259,7 @@ chart.set_x_axis(
         "name_font": {"size": 14, "bold": True},
     }
 )
-chart.set_y_axis({"major_unit": 10, "name": "aantal"})
+chart.set_y_axis({"major_unit": 10, "name": "aantal",'major_gridlines': {'visible': False},})
 chart.set_legend({"none": True})
 worksheet.set_chart(chart)
 
