@@ -232,7 +232,7 @@ chart.set_x_axis(
         "name_font": {"size": 14, "bold": True},
     }
 )
-chart.set_y_axis({"major_unit": 10, "name": "aantal",'major_gridlines': {'visible': False},})
+chart.set_y_axis({"major_unit": 20, "name": "aantal",'major_gridlines': {'visible': False},})
 chart.set_legend({"none": True})
 worksheet.set_chart(chart)
 
@@ -259,7 +259,7 @@ chart.set_x_axis(
         "name_font": {"size": 14, "bold": True},
     }
 )
-chart.set_y_axis({"major_unit": 10, "name": "aantal",'major_gridlines': {'visible': False},})
+chart.set_y_axis({"major_unit": 20, "name": "aantal",'major_gridlines': {'visible': False},})
 chart.set_legend({"none": True})
 worksheet.set_chart(chart)
 
