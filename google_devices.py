@@ -1,13 +1,14 @@
-import pickle
-import os.path
-from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
 import json
-import pandas as pd
-import numpy as np
+import os.path
+import pickle
 from datetime import datetime
+
+import numpy as np
+import pandas as pd
 import pandas.io.formats.excel
+from google.auth.transport.requests import Request
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
 
 date_today = datetime.now().strftime("%c").replace(":", "-")
 
