@@ -10,7 +10,7 @@ from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
-date_today = datetime.now().strftime("%c").replace(":", "-")
+date_today: str = datetime.now().strftime("%c").replace(":", "-")
 
 
 def process_get_detaild_chromebook_info(detaild_device_info):
@@ -48,7 +48,7 @@ def process_get_detaild_chromebook_info(detaild_device_info):
     # If modifying these scopes, delete the file token.pickle.
 
 
-SCOPES = [
+SCOPES: list[str] = [
     "https://www.googleapis.com/auth/admin.directory.device.chromeos",
 ]
 
@@ -75,7 +75,7 @@ if not creds or not creds.valid:
 
 service = build("admin", "directory_v1", credentials=creds)
 
-dfcols = [
+dfcols: list[str] = [
     "deviceId",
     "serialNumber",
     "status",
@@ -103,8 +103,8 @@ dfcols = [
 ]
 device_list = pd.DataFrame(columns=dfcols)
 
-aNextPageToken = "one"
-aPageToken = None
+aNextPageToken: str | None = "one"
+aPageToken: str | None = None
 
 while aNextPageToken:
     get_chromebooks_list = service.chromeosdevices().list(
@@ -215,16 +215,20 @@ worksheet = workbook.add_chartsheet("os_version")
 chart = workbook.add_chart({"type": "column"})
 chart.set_title({"name": "aantallen van elke os versie actieve chromebooks"})
 chart.set_style(3)
-chart.set_plotarea({'gradient': {'colors': ['#33ccff', '#80ffff', '#339966']}})
-chart.set_chartarea({'border': {'none': True},'fill':   {'color': '#bfbfbf'}})
+chart.set_plotarea({"gradient": {"colors": ["#33ccff", "#80ffff", "#339966"]}})
+chart.set_chartarea({"border": {"none": True}, "fill": {"color": "#bfbfbf"}})
 chart.add_series(
     {
         "name": "aantallen",
         "values": "=os_versions!$B$2:$B$20",
         "categories": "=os_versions!$A$2:$A$20",
-        'gap': 25,
+        "gap": 25,
         "name_font": {"size": 14, "bold": True},
-        'data_labels': {'value': True, 'position': 'inside_end','font': {'name': 'Calibri', 'color': 'white','rotation': 345}},
+        "data_labels": {
+            "value": True,
+            "position": "inside_end",
+            "font": {"name": "Calibri", "color": "white", "rotation": 345},
+        },
     }
 )
 chart.set_x_axis(
@@ -233,7 +237,13 @@ chart.set_x_axis(
         "name_font": {"size": 14, "bold": True},
     }
 )
-chart.set_y_axis({"major_unit": 20, "name": "aantal",'major_gridlines': {'visible': False},})
+chart.set_y_axis(
+    {
+        "major_unit": 20,
+        "name": "aantal",
+        "major_gridlines": {"visible": False},
+    }
+)
 chart.set_legend({"none": True})
 worksheet.set_chart(chart)
 
@@ -242,16 +252,20 @@ worksheet = workbook.add_chartsheet("aantallen chromebook")
 chart = workbook.add_chart({"type": "column"})
 chart.set_title({"name": "aantallen van elke model actieve chromebooks"})
 chart.set_style(3)
-chart.set_plotarea({'gradient': {'colors': ['#33ccff', '#80ffff', '#339966']}})
-chart.set_chartarea({'border': {'none': True},'fill':   {'color': '#bfbfbf'}})
+chart.set_plotarea({"gradient": {"colors": ["#33ccff", "#80ffff", "#339966"]}})
+chart.set_chartarea({"border": {"none": True}, "fill": {"color": "#bfbfbf"}})
 chart.add_series(
     {
         "name": "aantallen",
         "values": "=chromebook_models!$B$2:$B$10",
         "categories": "=chromebook_models!$A$2:$A$10",
-        'gap': 25,
+        "gap": 25,
         "name_font": {"size": 14, "bold": True},
-        'data_labels': {'value': True, 'position': 'inside_end','font': {'name': 'Calibri', 'color': 'white','rotation': 345}},
+        "data_labels": {
+            "value": True,
+            "position": "inside_end",
+            "font": {"name": "Calibri", "color": "white", "rotation": 345},
+        },
     }
 )
 chart.set_x_axis(
@@ -260,7 +274,13 @@ chart.set_x_axis(
         "name_font": {"size": 14, "bold": True},
     }
 )
-chart.set_y_axis({"major_unit": 20, "name": "aantal",'major_gridlines': {'visible': False},})
+chart.set_y_axis(
+    {
+        "major_unit": 20,
+        "name": "aantal",
+        "major_gridlines": {"visible": False},
+    }
+)
 chart.set_legend({"none": True})
 worksheet.set_chart(chart)
 
