@@ -133,11 +133,11 @@ while aNextPageToken:
         break
 
 
-def total_usage(time_range):
+def total_usage(time_range:str|list[dict[str,str]]) -> int:
     if not isinstance(time_range, list):
-        return "0"
+        return 0
     else:
-        total = []
+        total:list = []
         for time in time_range:
             total.append(time["activeTime"])
         return int(sum(total) / 6000)
@@ -181,7 +181,7 @@ nodig_voor_controlen = device_list[
     ]
 ]
 
-num_rows = len(device_list)
+num_rows: int = len(device_list)
 
 writer = pd.ExcelWriter("active_chrome_devices" + "_" + date_today + ".xlsx", engine="xlsxwriter")
 pandas.io.formats.excel.ExcelFormatter.header_style = None
